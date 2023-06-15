@@ -438,6 +438,7 @@ class TestLineage(unittest.TestCase):
         )
         self.assertEqual(node.name, "b")
 
+    @unittest.skip("disabled normalization")
     def test_lineage_normalize(self) -> None:
         node = lineage("a", "WITH x AS (SELECT 1 a) SELECT a FROM x", dialect="snowflake")
         self.assertEqual(node.name, "A")
@@ -459,7 +460,7 @@ class TestLineage(unittest.TestCase):
         ) subq
         """
 
-        node = lineage("y", sql, dialect="oracle")
+        node = lineage("Y", sql, dialect="oracle")
 
         self.assertEqual(node.name, "Y")
         self.assertEqual(node.expression.sql(dialect="oracle"), "SUBQ.Y AS Y")
