@@ -470,8 +470,9 @@ class Scope:
                     scope.subquery_scopes,
                 )
             )
-            if len(result) > MAX_SCOPE_DEPTH:
-                raise OptimizeError("Scope depth limit exceeded")
+            actual_depth = len(result)
+            if actual_depth > MAX_SCOPE_DEPTH:
+                raise OptimizeError(f"Scope depth limit({actual_depth}) exceeded max depth limit({MAX_SCOPE_DEPTH})")
 
         yield from reversed(result)
 
