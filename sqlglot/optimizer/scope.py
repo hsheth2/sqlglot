@@ -14,7 +14,7 @@ logger = logging.getLogger("sqlglot")
 
 TRAVERSABLES = (exp.Query, exp.DDL, exp.DML)
 
-MAX_SCOPE_DEPTH = 200
+MAX_SCOPE_DEPTH = 500
 
 
 class ScopeType(Enum):
@@ -478,7 +478,7 @@ class Scope:
             actual_depth = len(result)
             if actual_depth > MAX_SCOPE_DEPTH:
                 raise OptimizeError(
-                    f"Scope depth limit({actual_depth}) exceeded max depth limit({MAX_SCOPE_DEPTH})"
+                    f"Scope depth limit of {MAX_SCOPE_DEPTH} exceeded"
                 )
 
         yield from reversed(result)
