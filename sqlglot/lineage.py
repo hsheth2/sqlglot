@@ -208,26 +208,6 @@ def to_node(
     if upstream:
         upstream.downstream.append(node)
 
-    _expression_into_node(
-        select=select,
-        node=node,
-        scope=scope,
-        dialect=dialect,
-        source_name=source_name,
-        trim_selects=trim_selects,
-    )
-
-    return node
-
-
-def _expression_into_node(
-    select: exp.Expression,
-    node: Node,
-    scope: Scope,
-    dialect: DialectType,
-    source_name: t.Optional[str] = None,
-    trim_selects: bool = True,
-) -> None:
     subquery_scopes = {
         id(subquery_scope.expression): subquery_scope for subquery_scope in scope.subquery_scopes
     }
@@ -321,6 +301,8 @@ def _expression_into_node(
                     subfield=subfield,
                 )
             )
+
+    return node
 
 
 class GraphHTML:
