@@ -294,12 +294,7 @@ def to_node(
             subfield = ".".join(subfields)
 
             node.downstream.append(
-                Node(
-                    name=c.sql(comments=False),
-                    source=source,
-                    expression=source,
-                    subfield=subfield,
-                )
+                Node(name=c.sql(comments=False), source=source, expression=source, subfield=subfield)
             )
 
     return node

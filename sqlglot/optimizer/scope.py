@@ -14,8 +14,6 @@ logger = logging.getLogger("sqlglot")
 
 TRAVERSABLES = (exp.Query, exp.DDL, exp.DML)
 
-MAX_SCOPE_DEPTH = 500
-
 
 class ScopeType(Enum):
     ROOT = auto()
@@ -454,7 +452,6 @@ class Scope:
 
     def __repr__(self):
         return f"Scope<{self.expression.sql()}>"
-
     def traverse(self):
         """
         Traverse the scope tree from this node.
@@ -463,9 +460,16 @@ class Scope:
             Scope: scope instances in depth-first-search post-order
         """
         stack = [self]
+        seen_scopes = set()
         result = []
         while stack:
             scope = stack.pop()
+
+            # Scopes aren't hashable, so we use id(scope) instead.
+            if id(scope) in seen_scopes:
+                raise OptimizeError(f"Scope {scope} has a circular scope dependency")
+            seen_scopes.add(id(scope))
+
             result.append(scope)
             stack.extend(
                 itertools.chain(
@@ -475,11 +479,6 @@ class Scope:
                     scope.subquery_scopes,
                 )
             )
-            actual_depth = len(result)
-            if actual_depth > MAX_SCOPE_DEPTH:
-                raise OptimizeError(
-                    f"Scope depth limit of {MAX_SCOPE_DEPTH} exceeded"
-                )
 
         yield from reversed(result)
 
